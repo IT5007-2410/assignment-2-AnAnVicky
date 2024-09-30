@@ -1,12 +1,12 @@
 /*Q1. JS Variable needs to be created here. Below variable is just an example. Try to add more attributes.*/
 const initialTravellers = [
   {
-    id: 1, name: 'Jack', phone: 88885555,
-    bookingTime: new Date(),
+    id: 1, name: 'Jack', idNumber: 'S1234567D', phone: 88885555, orderId: 202409301234567,
+    travelDate: new Date('2024-10-15'), bookingTime: new Date(),
   },
   {
-    id: 2, name: 'Rose', phone: 88884444,
-    bookingTime: new Date(),
+    id: 2, name: 'Rose', idNumber: 'S7654321D', phone: 88886666, orderId: 202409301234568,
+    travelDate: new Date('2024-10-06'), bookingTime: new Date(),
   },
 ];
 
