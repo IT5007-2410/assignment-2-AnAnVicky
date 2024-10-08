@@ -63,13 +63,35 @@ function Display(props) {
 class Add extends React.Component {
   constructor() {
     super();
+    this.state = { 
+      successMessage: '', 
+      errorMessage: '' // reminder message
+    };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleSubmit(e) {
     e.preventDefault();
-    /*Q4. Fetch the passenger details from the add form and call bookTraveller()*/
       const form = document.forms.addTraveller;
+      const idNumber = form.travelleridnumber.value.trim();
+      const phone = form.phone.value.trim(); 
+
+      //id number must be 9 characters long
+      const idNumberRegex = /^[A-Za-z]\d{7}[A-Za-z]$/;
+      if (!idNumberRegex.test(idNumber)) {
+        this.setState({ errorMessage: 'Invalid ID Number. It must be 9 characters long.' });
+        return;
+      }
+
+      //phone number must be 8 digits long
+      const phoneRegex = /^\d{8}$/;
+      if (!phoneRegex.test(phone)) {
+        this.setState({ errorMessage: 'Invalid Phone Number. It must be 8 digits long.' });
+        return;
+      }
+
+      //if the ID number and phone number are valid, clear the error message
+      this.setState({ errorMessage: '' });
 
       const newTraveller = {
       name: form.travellername.value,
@@ -88,21 +110,60 @@ class Add extends React.Component {
     form.phone.value = '';
     form.travelDate.value = '';
 
+    // display a success message
+    this.setState({ successMessage: 'Traveller added successfully!' });
+
+    // hide the success message after 2 seconds
+    setTimeout(() => {
+      this.setState({ successMessage: '' });
+    }, 2000);
   }
+
 
   render() {
     return (
-      <form name="addTraveller" onSubmit={this.handleSubmit}>
-	    {/*Q4. Placeholder to enter passenger details. Below code is just an example.*/}
-        <input type="text" name="travellername" placeholder="Name" />
-        <input type="text" name="travelleridnumber" placeholder="ID Number" required />
-        <input type="text" name="phone" placeholder="Phone" required />
-        <input type="date" name="travelDate" required />
-        <button>Add</button>
-      </form>
+      <div>
+        <form name="addTraveller" onSubmit={this.handleSubmit} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <input 
+            type="text" 
+            name="travellername" 
+            placeholder="Name" 
+            required 
+            style={{ margin: '5px', padding: '10px', width: '250px', fontSize: '16px' }} 
+          />
+          <input 
+            type="text" 
+            name="travelleridnumber" 
+            placeholder="ID Number (e.g., S1234567D)" 
+            required 
+            style={{ margin: '5px', padding: '10px', width: '250px', fontSize: '16px' }} 
+          />
+          <input 
+            type="text" 
+            name="phone" 
+            placeholder="Phone (8 digits)" 
+            required 
+            style={{ margin: '5px', padding: '10px', width: '250px', fontSize: '16px' }} 
+          />
+          <input 
+            type="date" 
+            name="travelDate" 
+            required 
+            style={{ margin: '5px', padding: '10px', width: '250px', fontSize: '16px' }} 
+          />
+          <button 
+            type="submit" 
+            style={{ margin: '10px', padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}>
+            Add
+          </button>
+        </form>
+        {this.state.errorMessage && <p style={{ color: 'red', textAlign: 'center', fontSize: '18px' }}>{this.state.errorMessage}</p>}
+        {this.state.successMessage && <p style={{ color: 'green', textAlign: 'center', fontSize: '18px' }}>{this.state.successMessage}</p>}
+      </div>
     );
   }
 }
+
 
 
 class Delete extends React.Component {
@@ -120,9 +181,19 @@ class Delete extends React.Component {
 
   render() {
     return (
-      <form name="deleteTraveller" onSubmit={this.handleSubmit}>
-	      <input type="text" name="idNumber" placeholder="Enter ID Number" required/>
-        <button>Delete</button>
+      <form name="deleteTraveller" onSubmit={this.handleSubmit} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
+        <input 
+          type="text" 
+          name="idNumber" 
+          placeholder="Enter ID Number" 
+          required 
+          style={{ margin: '5px', padding: '10px', width: '300px', fontSize: '16px' }} 
+        />
+        <button 
+          type="submit" 
+          style={{ margin: '10px', padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}>
+          Delete
+        </button>
       </form>
     );
   }
@@ -134,10 +205,10 @@ class Homepage extends React.Component {
 	}
 	render(){
     const totalSeats = 10;
-    const bookedSeats = this.props.travellers.length; // 已预留座位数
-    const availableSeats = totalSeats - bookedSeats; // 可预留座位数
+    const bookedSeats = this.props.travellers.length; //seat booked
+    const availableSeats = totalSeats - bookedSeats; //seat available
 
-    // 创建座位数组
+    //create an array of seats, with the first few seats occupied and the rest available
     const seats = Array.from({ length: totalSeats }, (_, index) => index < bookedSeats ? 'occupied' : 'available');
 	return (
     <div>
@@ -145,7 +216,7 @@ class Homepage extends React.Component {
     <div style={{
       display: 'flex',
       flexWrap: 'wrap',
-      width: '220px', // 根据座位数量和大小调整宽度
+      width: '220px', 
       margin: '0 auto'
     }}>
       {seats.map((status, index) => (
@@ -155,14 +226,13 @@ class Homepage extends React.Component {
             width: '40px',
             height: '40px',
             margin: '5px',
-            backgroundColor: status === 'occupied' ? 'gray' : 'green',
+            backgroundColor: status === 'occupied' ? 'gray' : 'green', //according to the status, set the background color
             border: '1px solid #000',
             borderRadius: '5px',
             cursor: 'default'
           }}
-          disabled // 禁用按钮，使其不可点击
+          disabled // disable the button
         >
-          {/* 不显示编号 */}
         </button>
       ))}
     </div>
