@@ -8,6 +8,14 @@ const initialTravellers = [
     id: 2, name: 'Rose', idNumber: 'S7654321D', phone: 88886666, orderId: 202409301234568,
     travelDate: new Date('2024-10-06'), bookingTime: new Date(),
   },
+  {
+    id: 3, name: 'Jane', idNumber: 'S0987654D', phone: 88876666, orderId: 202409301234566,
+    travelDate: new Date('2024-10-10'), bookingTime: new Date(),
+  },
+  {
+    id: 4, name: 'Tom', idNumber: 'S6574893D', phone: 87886436, orderId: 202409301234560,
+    travelDate: new Date('2024-10-20'), bookingTime: new Date(),
+  },
 ];
 
 
@@ -104,14 +112,16 @@ class Delete extends React.Component {
   }
   handleSubmit(e) {
     e.preventDefault();
-    /*Q5. Fetch the passenger details from the deletion form and call deleteTraveller()*/
+    const form = document.forms.deleteTraveller;
+    const idNumberToDelete = form.idNumber.value.trim(); //according to the ID number, delete the passenger,because ID number is unique
+    this.props.deleteTraveller(idNumberToDelete);//Q5. Call the deleteTraveller() function in the parent component
+    form.travellername.value = ''; 
   }
 
   render() {
     return (
       <form name="deleteTraveller" onSubmit={this.handleSubmit}>
-	    {/*Q5. Placeholder form to enter information on which passenger's ticket needs to be deleted. Below code is just an example.*/}
-	<input type="text" name="travellername" placeholder="Name" />
+	      <input type="text" name="idNumber" placeholder="Enter ID Number" required/>
         <button>Delete</button>
       </form>
     );
@@ -142,10 +152,10 @@ class Homepage extends React.Component {
 class TicketToRide extends React.Component {
   constructor() {
     super();
-    this.state = { travellers: [], nextId: 3, selector: 'home' };
-    this.bookTraveller = this.bookTraveller.bind(this);
-    this.deleteTraveller = this.deleteTraveller.bind(this);
-    this.setSelector = this.setSelector.bind(this);
+    this.state = { travellers: initialTravellers, nextId: 5, selector: 'home' }; //initialize the state variable
+    this.bookTraveller = this.bookTraveller.bind(this); //bind the bookTraveller() function
+    this.deleteTraveller = this.deleteTraveller.bind(this);  //bind the deleteTraveller() function
+    this.setSelector = this.setSelector.bind(this);  //bind the setSelector() function
   }
 
   setSelector(value)
@@ -172,9 +182,15 @@ class TicketToRide extends React.Component {
       }));
   }
 
-  deleteTraveller(passenger) {
-	  /*Q5. Write code to delete a passenger from the traveller state variable.*/
+  deleteTraveller(idNumber) {
+    this.setState((prevState) => ({
+      travellers: prevState.travellers.filter(traveller => traveller.idNumber !== idNumber)  // delete the passenger with the specified ID number
+    }),() => {
+      // after deleting the passenger, display the updated list of passengers
+      this.setSelector('displayTraveller');
+    });
   }
+
   render() {
     return (//design navbar format and buttons with onClick event
       <div> 
