@@ -12,10 +12,16 @@ const initialTravellers = [
 
 
 function TravellerRow(props) {
-  {/*Q3. Placeholder to initialize local variable based on traveller prop.*/}
+  const { traveller } = props;
   return (
     <tr>
-	  {/*Q3. Placeholder for rendering one row of a table with required traveller attribute values.*/}
+	    <td>{traveller.id}</td>
+      <td>{traveller.name}</td>
+      <td>{traveller.idNumber}</td>
+      <td>{traveller.phone}</td>
+      <td>{traveller.orderId}</td>
+      <td>{traveller.travelDate.toLocaleDateString()}</td>
+      <td>{traveller.bookingTime.toLocaleString()}</td>
     </tr>
   );
 }
@@ -23,20 +29,24 @@ function TravellerRow(props) {
 function Display(props) {
   
 	/*Q3. Write code to render rows of table, reach corresponding to one traveller. Make use of the TravellerRow function that draws one row.*/
-
+  const { travellers } = props;
   return (
     <table className="bordered-table">
       <thead>
         <tr>
-	  {/*Q3. Below table is just an example. Add more columns based on the traveller attributes you choose.*/}
           <th>ID</th>
           <th>Name</th>
+          <th>ID Number</th>
           <th>Phone</th>
+          <th>Order ID</th>
+          <th>Travel Date</th>
           <th>Booking Time</th>
         </tr>
       </thead>
       <tbody>
-        {/*Q3. write code to call the JS variable defined at the top of this function to render table rows.*/}
+        {travellers.map(traveller => (
+          <TravellerRow key={traveller.id} traveller={traveller} />
+        ))}
       </tbody>
     </table>
   );
@@ -183,10 +193,9 @@ class TicketToRide extends React.Component {
             </div>
             <div className="content">
               {this.state.selector === 'home' && <Homepage travellers={this.state.travellers} />}   
-
-              {/*Q3. Code to call component that Displays Travellers.*/}
-              {/*Q4. Code to call the component that adds a traveller.*/}
-              {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
+              {this.state.selector === 'addTraveller' && <Add bookTraveller={this.bookTraveller} />}
+              {this.state.selector === 'displayTraveller' && <Display travellers={this.state.travellers} />}
+              {this.state.selector === 'deleteTraveller' && <Delete deleteTraveller={this.deleteTraveller} />}
             </div>
 	  </div>
     );
