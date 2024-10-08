@@ -133,20 +133,43 @@ class Homepage extends React.Component {
 	super();
 	}
 	render(){
+    const totalSeats = 10;
+    const bookedSeats = this.props.travellers.length; // 已预留座位数
+    const availableSeats = totalSeats - bookedSeats; // 可预留座位数
+
+    // 创建座位数组
+    const seats = Array.from({ length: totalSeats }, (_, index) => index < bookedSeats ? 'occupied' : 'available');
 	return (
-  <div>
+    <div>
     <h2>Seat Availability</h2>
-	    <div className="seats">
-	      {Array.from({ length: 10 }, (_, index) => (  //Q2. Placeholder to display 10 seats.
-	        <button
-	          key={index}  
-	          className={this.props.travellers[index] ? 'occupied' : 'available'}  //Q2. Placeholder to check if the seat is occupied or available.
-	        >
-	          {index + 1} 
-	        </button>
-	      ))}
-	    </div>
-	</div>);
+    <div style={{
+      display: 'flex',
+      flexWrap: 'wrap',
+      width: '220px', // 根据座位数量和大小调整宽度
+      margin: '0 auto'
+    }}>
+      {seats.map((status, index) => (
+        <button
+          key={index}
+          style={{
+            width: '40px',
+            height: '40px',
+            margin: '5px',
+            backgroundColor: status === 'occupied' ? 'gray' : 'green',
+            border: '1px solid #000',
+            borderRadius: '5px',
+            cursor: 'default'
+          }}
+          disabled // 禁用按钮，使其不可点击
+        >
+          {/* 不显示编号 */}
+        </button>
+      ))}
+    </div>
+    <p style={{ textAlign: 'center', marginTop: '10px' }}>
+      {availableSeats} seats available out of {totalSeats}
+    </p>
+  </div>);
 	}
 }
 class TicketToRide extends React.Component {
@@ -173,6 +196,14 @@ class TicketToRide extends React.Component {
   }
 
   bookTraveller(newTraveller) {
+    const totalSeats = 10; //total number of seats
+    const bookedSeats = this.state.travellers.length;
+  
+    // if still have available seats
+    if (bookedSeats >= totalSeats) {
+      alert("No available seats!");
+      return;
+    }
 	    // update the state variable with the new passenger
       newTraveller.id = this.state.nextId; // assign the next ID to the new traveller
       this.setState((prevState) => ({
