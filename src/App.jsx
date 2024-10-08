@@ -92,8 +92,18 @@ class Homepage extends React.Component {
 	}
 	render(){
 	return (
-	<div>
-		{/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
+  <div>
+    <h2>Seat Availability</h2>
+	    <div className="seats">
+	      {Array.from({ length: 10 }, (_, index) => (  //Q2. Placeholder to display 10 seats.
+	        <button
+	          key={index}  
+	          className={this.props.travellers[index] ? 'occupied' : 'available'}  //Q2. Placeholder to check if the seat is occupied or available.
+	        >
+	          {index + 1}  //Q2. Placeholder to display seat number.
+	        </button>
+	      ))}
+	    </div>
 	</div>);
 	}
 }
@@ -103,11 +113,12 @@ class TicketToRide extends React.Component {
     this.state = { travellers: [], selector: 1};
     this.bookTraveller = this.bookTraveller.bind(this);
     this.deleteTraveller = this.deleteTraveller.bind(this);
+    this.setSelector = this.setSelector.bind(this);
   }
 
   setSelector(value)
   {
-  	/*Q2. Function to set the value of component selector variable based on user's button click.*/
+        this.setState({selector: value});  	
   }
   componentDidMount() {
     this.loadData();
@@ -127,21 +138,57 @@ class TicketToRide extends React.Component {
 	  /*Q5. Write code to delete a passenger from the traveller state variable.*/
   }
   render() {
-    return (
-      <div>
-        <h1>Ticket To Ride</h1>
-	<div>
-	    {/*Q2. Code for Navigation bar. Use basic buttons to create a nav bar. Use states to manage selection.*/}
-	</div>
-	<div>
-		{/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
-		{/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
-		{/*Q3. Code to call component that Displays Travellers.*/}
-		
-		{/*Q4. Code to call the component that adds a traveller.*/}
-		{/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
-	</div>
-      </div>
+    return (//design navbar format and buttons with onClick event
+      <div> 
+        <h1>Ticket To Ride</h1>  
+        <div style={{    
+          display: 'flex',       
+          justifyContent: 'space-around',  
+          backgroundColor: 'yellow', 
+          padding: '10px', 
+          borderRadius: '8px'
+        }}>
+          <button 
+            style={{ 
+              backgroundColor: 'transparent', 
+              border: 'none', 
+              fontSize: '16px', 
+              cursor: 'pointer' 
+            }} 
+            onClick={() => this.setSelector('home')}>Home</button>
+          <button 
+            style={{ 
+              backgroundColor: 'transparent', 
+              border: 'none', 
+              fontSize: '16px', 
+              cursor: 'pointer' 
+            }} 
+            onClick={() => this.setSelector('addTraveller')}>Add Traveller</button>
+          <button 
+            style={{ 
+              backgroundColor: 'transparent', 
+              border: 'none', 
+              fontSize: '16px', 
+              cursor: 'pointer' 
+            }} 
+            onClick={() => this.setSelector('displayTraveller')}>Display Travellers</button>
+          <button 
+            style={{ 
+              backgroundColor: 'transparent', 
+              border: 'none', 
+              fontSize: '16px', 
+              cursor: 'pointer' 
+            }} 
+            onClick={() => this.setSelector('deleteTraveller')}>Delete Traveller</button>
+            </div>
+            <div className="content">
+              {this.state.selector === 'home' && <Homepage travellers={this.state.travellers} />}   
+
+              {/*Q3. Code to call component that Displays Travellers.*/}
+              {/*Q4. Code to call the component that adds a traveller.*/}
+              {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
+            </div>
+	  </div>
     );
   }
 }
