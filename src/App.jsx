@@ -61,6 +61,25 @@ class Add extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     /*Q4. Fetch the passenger details from the add form and call bookTraveller()*/
+      const form = document.forms.addTraveller;
+
+      const newTraveller = {
+      name: form.travellername.value,
+      idNumber: form.travelleridnumber.value, // add the ID number to the new traveller
+      phone: form.phone.value,
+      orderId: Math.floor(Math.random() * 1000000000000000), // generate a random order ID for the new traveller
+      travelDate: new Date(form.travelDate.value),
+      bookingTime: new Date(),
+    };
+    
+    this.props.bookTraveller(newTraveller); // call the bookTraveller() function in the parent component
+    
+    // clear the form fields
+    form.travellername.value = '';
+    form.travelleridnumber.value = '';
+    form.phone.value = '';
+    form.travelDate.value = '';
+
   }
 
   render() {
@@ -68,6 +87,9 @@ class Add extends React.Component {
       <form name="addTraveller" onSubmit={this.handleSubmit}>
 	    {/*Q4. Placeholder to enter passenger details. Below code is just an example.*/}
         <input type="text" name="travellername" placeholder="Name" />
+        <input type="text" name="travelleridnumber" placeholder="ID Number" required />
+        <input type="text" name="phone" placeholder="Phone" required />
+        <input type="date" name="travelDate" required />
         <button>Add</button>
       </form>
     );
@@ -110,7 +132,7 @@ class Homepage extends React.Component {
 	          key={index}  
 	          className={this.props.travellers[index] ? 'occupied' : 'available'}  //Q2. Placeholder to check if the seat is occupied or available.
 	        >
-	          {index + 1}  //Q2. Placeholder to display seat number.
+	          {index + 1} 
 	        </button>
 	      ))}
 	    </div>
@@ -120,7 +142,7 @@ class Homepage extends React.Component {
 class TicketToRide extends React.Component {
   constructor() {
     super();
-    this.state = { travellers: [], selector: 1};
+    this.state = { travellers: [], nextId: 3, selector: 'home' };
     this.bookTraveller = this.bookTraveller.bind(this);
     this.deleteTraveller = this.deleteTraveller.bind(this);
     this.setSelector = this.setSelector.bind(this);
@@ -140,8 +162,14 @@ class TicketToRide extends React.Component {
     }, 500);
   }
 
-  bookTraveller(passenger) {
-	    /*Q4. Write code to add a passenger to the traveller state variable.*/
+  bookTraveller(newTraveller) {
+	    // update the state variable with the new passenger
+      newTraveller.id = this.state.nextId; // assign the next ID to the new traveller
+      this.setState((prevState) => ({
+        travellers: [...prevState.travellers, newTraveller],
+        nextId: prevState.nextId + 1, //upoad the next ID
+        selector: 'displayTraveller'
+      }));
   }
 
   deleteTraveller(passenger) {
